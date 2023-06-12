@@ -1,4 +1,4 @@
-package cn.lewis.train.member.aspect;
+package cn.lewis.train.common.aspect;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
