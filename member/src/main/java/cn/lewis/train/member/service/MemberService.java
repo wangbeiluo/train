@@ -1,8 +1,10 @@
 package cn.lewis.train.member.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.lewis.train.common.exception.BusinessException;
 import cn.lewis.train.common.exception.BusinessExceptionEnum;
+import cn.lewis.train.common.util.SnowUtil;
 import cn.lewis.train.member.domain.Member;
 import cn.lewis.train.member.domain.MemberExample;
 import cn.lewis.train.member.mapper.MemberMapper;
@@ -38,7 +40,8 @@ public class MemberService
         }
 
         Member member = new Member();
-        member.setId(System.currentTimeMillis());
+        // 雪花算法
+        member.setId(SnowUtil.getSnowflakeNextId());
         member.setMobile(mobile);
         memberMapper.insert(member);
         return member.getId();
