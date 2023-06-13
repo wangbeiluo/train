@@ -2,6 +2,7 @@ package cn.lewis.train.member.controller;
 
 import cn.lewis.train.common.resp.CommonResp;
 import cn.lewis.train.member.req.MemberRegisterReq;
+import cn.lewis.train.member.req.MemberSendCodeReq;
 import cn.lewis.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -34,5 +35,11 @@ public class MemberController
     public CommonResp<Long> register(@Valid MemberRegisterReq req) {
         long register = memberService.register(req.getMobile());
         return new CommonResp<Long>(register);
+    }
+
+    @PostMapping("/sendCode")
+    public CommonResp<Long> sendCode(@Valid MemberSendCodeReq req) {
+        memberService.sendCode(req);
+        return new CommonResp<>();
     }
 }
