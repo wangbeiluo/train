@@ -39,6 +39,8 @@
 
 <script>
 import { defineComponent, reactive } from 'vue';
+import  axios from 'axios';
+import { notification } from 'ant-design-vue';
 export default defineComponent({
   name: "login-view",
   setup() {
@@ -47,8 +49,23 @@ export default defineComponent({
       code: '',
     });
 
+    const sendCode = () => {
+      axios.post("http://localhost:8000/member/member/sendCode", {
+        mobile: loginForm.mobile
+      }).then(response => {
+        let data = response.data;
+        if (data.success) {
+          notification.success({ description: '发送验证码成功！' });
+          loginForm.code = "8888";
+        } else {
+          notification.error({ description: data.message });
+        }
+      });
+    };
+
     return {
       loginForm,
+      sendCode
     };
   },
 });
