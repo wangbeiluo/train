@@ -1,7 +1,9 @@
 package cn.lewis.train.member.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.lewis.train.common.exception.BusinessException;
 import cn.lewis.train.common.exception.BusinessExceptionEnum;
@@ -9,7 +11,9 @@ import cn.lewis.train.common.util.SnowUtil;
 import cn.lewis.train.member.domain.Member;
 import cn.lewis.train.member.domain.MemberExample;
 import cn.lewis.train.member.mapper.MemberMapper;
+import cn.lewis.train.member.req.MemberLoginReq;
 import cn.lewis.train.member.req.MemberSendCodeReq;
+import cn.lewis.train.member.resp.MemberLoginResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,5 +85,37 @@ public class MemberService
 
         // TODO 对接短信通道，发送短信
         LOG.info("对接短信通道");
+    }
+
+    public MemberLoginResp login(MemberLoginReq req) {
+        String mobile = req.getMobile();
+        String code = req.getCode();
+        Member memberDB = selectByMobile(mobile);
+
+        // 如果手机号不存在，则插入一条记录
+        if (ObjectUtil.isNull(memberDB)) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
+        }
+
+        // 校验短信验证码
+        if (!"8888".equals(code)) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
+        }
+
+        MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+//        String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
+//        memberLoginResp.setToken(token);
+        return memberLoginResp;
+    }
+
+    private Member selectByMobile(String mobile) {
+        MemberExample memberExample = new MemberExample();
+        memberExample.createCriteria().andMobileEqualTo(mobile);
+        List<Member> list = memberMapper.selectByExample(memberExample);
+        if (CollUtil.isEmpty(list)) {
+            return null;
+        } else {
+            return list.get(0);
+        }
     }
 }

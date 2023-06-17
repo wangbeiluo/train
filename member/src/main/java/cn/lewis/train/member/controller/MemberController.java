@@ -1,15 +1,14 @@
 package cn.lewis.train.member.controller;
 
 import cn.lewis.train.common.resp.CommonResp;
+import cn.lewis.train.member.req.MemberLoginReq;
 import cn.lewis.train.member.req.MemberRegisterReq;
 import cn.lewis.train.member.req.MemberSendCodeReq;
+import cn.lewis.train.member.resp.MemberLoginResp;
 import cn.lewis.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author lewis
@@ -41,5 +40,11 @@ public class MemberController
     public CommonResp<Long> sendCode(@Valid MemberSendCodeReq req) {
         memberService.sendCode(req);
         return new CommonResp<>();
+    }
+
+    @PostMapping("/login")
+    public CommonResp<MemberLoginResp> login(@Valid @RequestBody MemberLoginReq req) {
+        MemberLoginResp resp = memberService.login(req);
+        return new CommonResp<MemberLoginResp>(resp);
     }
 }
